@@ -1,9 +1,8 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import { randomUUID } from "crypto";
 import { Request, Response } from "express";
-import z from 'zod';
+import { buildMCPSever } from "../mcp/buildMCPServer";
 
 const transports: { [sessionId: string]: StreamableHTTPServerTransport} = {}
 
@@ -26,27 +25,7 @@ export const clientToServerCommunication = async (req: any, res: any) => {
             }
         };
 
-        const server = new McpServer({
-            name: 'example-server',
-            version: '1.0.0'
-        });
-
-        server.registerTool(
-            'echo',
-            {
-                title: 'Echo Tool',
-                description: 'Echoes back the provided message',
-                inputSchema: { message: z.string() },
-                outputSchema: { echo: z.string() }
-            },
-            async ({ message }) => {
-                const output = { echo: `Tool echo: ${message}` };
-                return {
-                    content: [{ type: 'text', text: JSON.stringify(output) }],
-                    structuredContent: output
-                };
-            }
-        );
+        const server = buildMCPSever();
 
         await server.connect(transport);
     }
