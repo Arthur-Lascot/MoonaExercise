@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import iamATeaPot  from "./tools/IamATeaPotTool";
+import teaPotResource from "./ressources/teaPotRessource";
 
 export const buildMCPSever = (): McpServer => 
 {
@@ -18,6 +19,13 @@ export const buildMCPSever = (): McpServer =>
         },
         iamATeaPot.handler as any //FIXME
     )
+
+    server.registerResource(
+        teaPotResource.name,
+        teaPotResource.template,
+        teaPotResource.metadata,
+        teaPotResource.handler as any //FIXME
+    );
 
     return server;
 }
